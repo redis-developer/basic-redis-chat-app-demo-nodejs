@@ -1,0 +1,18 @@
+.chat-list-item {
+  cursor: pointer;
+  padding: 14px 16px;
+}
+.mdi-circle:before {
+  content: "󰝥";
+}
+
+.mdi-set,
+.mdi:before {
+  display: inline-block;
+  font: normal normal normal 24px/1 Material Design Icons;
+  font-size: inherit;
+  text-rendering: auto;
+  line-height: inherit;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

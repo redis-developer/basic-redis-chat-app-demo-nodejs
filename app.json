@@ -1,0 +1,13 @@
+{
+  "name": "Node.JS Redis chat",
+  "env": {
+    "REDIS_ENDPOINT_URL": {
+      "description": "A Redis cloud endpoint URL.",
+      "required": true
+    },
+    "REDIS_PASSWORD": {
+      "description": "A Redis password.",
+      "required": true
+    }
+  }
+}

@@ -1,0 +1,20 @@
+.login-form .username-select button {
+  background-color: transparent !important;
+  color: inherit;
+  padding: 7.5px 12px !important;
+  display: block !important;
+  border: 1px solid rgb(206, 212, 218) !important;
+  border-radius: 4px !important;
+  width: 100% !important;
+  text-align: left !important;
+}
+
+.login-form .username-select .btn-primary:not(:disabled):not(.disabled).active,
+.login-form .username-select .btn-primary:not(:disabled):not(.disabled):active,
+.show > .btn-primary.dropdown-toggle {
+  color: inherit;
+}
+
+.login-form .username-select .dropdown-menu.show.dropdown-menu-right {
+  transform: translate(0px, 38px) !important;
+}

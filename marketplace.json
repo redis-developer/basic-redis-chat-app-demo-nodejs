@@ -1,0 +1,29 @@
+{
+  "app_name": "Basic Redis chat app in Nodejs",
+  "description": "Showcases how to impliment chat app in NodeJS",
+  "type": "App",
+  "contributed_by": "Redis Labs",
+  "repo_url": "https://github.com/redis-developer/basic-redis-chat-app-demo-nodejs",
+  "download_url": "https://github.com/redis-developer/basic-redis-chat-app-demo-nodejs/archive/main.zip",
+  "hosted_url": "",
+  "quick_deploy": "true",
+  "deploy_buttons": [
+    {
+      "heroku": "https://heroku.com/deploy?template=https://github.com/redis-developer/basic-redis-chat-app-demo-nodejs"
+    },
+    {
+      "Google": "https://deploy.cloud.run/?git_repo=https://github.com/redis-developer/basic-redis-chat-app-demo-nodejs.git"
+    }
+  ],
+  "language": ["JavaScript"],
+  "redis_commands": ["INCR", "SET", "ZRANGEBYSCORE"],
+  "redis_features": [],
+  "redis_modules": [],
+  "app_image_urls": [
+    "https://github.com/redis-developer/basic-redis-chat-app-demo-nodejs/blob/main/docs/screenshot001.png?raw=true"
+  ],
+  "youtube_url": "",
+  "special_tags": [],
+  "verticals": [],
+  "markdown": "https://raw.githubusercontent.com/redislabs-training/redis-sitesearch/master/README.md"
+}
