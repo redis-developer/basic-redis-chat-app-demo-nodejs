@@ -1,8 +1,9 @@
 // @ts-check
-import { Dropdown, DropdownButton, Toast } from "react-bootstrap";
-import React, { useState } from "react";
+import { Toast } from "react-bootstrap";
+import React, { useState, useRef } from "react";
 import Logo from "../Logo";
 import "./style.css";
+import { useEffect } from "react";
 
 const DEMO_USERS = ["Pablo", "Joe", "Mary", "Alex"];
 
@@ -78,8 +79,13 @@ export default function Login({ onLogIn }) {
             onSubmit={onSubmit}
           >
             <label className="font-size-12">Name</label>
+
             <div className="username-select mb-3">
-              <UsernameSelect username={username} setUsername={setUsername} />
+              <UsernameSelect
+                username={username}
+                setUsername={setUsername}
+                names={DEMO_USERS}
+              />
             </div>
 
             <label htmlFor="inputPassword" className="font-size-12">
@@ -127,22 +133,63 @@ export default function Login({ onLogIn }) {
   );
 }
 
-const UsernameSelect = ({ username, setUsername }) => {
+const UsernameSelect = ({ username, setUsername, names = [""] }) => {
+  const [open, setOpen] = useState(false);
+  const [width, setWidth] = useState(0);
+  const ref = useRef();
+  /** @ts-ignore */
+  const clientRectWidth = ref.current?.getBoundingClientRect().width;
+  useEffect(() => {
+    /** @ts-ignore */
+    setWidth(clientRectWidth);
+  }, [clientRectWidth]);
+
+  /** Click away listener */
+  useEffect(() => {
+    if (open) {
+      const listener = () => setOpen(false);
+      document.addEventListener("click", listener);
+      return () => document.removeEventListener("click", listener);
+    }
+  }, [open]);
+
+  /** Make the current div focused */
+  useEffect(() => {
+    if (open) {
+      /** @ts-ignore */
+      ref.current?.focus();
+    }
+  }, [open]);
+
   return (
-    <DropdownButton
-      menuAlign="right"
-      title={username}
-      id="dropdown-menu-align-right"
+    <div
+      tabIndex={0}
+      ref={ref}
+      className={`username-select-dropdown ${open ? "open" : ""}`}
+      onClick={() => setOpen((o) => !o)}
     >
-      {DEMO_USERS.map((name, i) => (
-        <Dropdown.Item
-          key={name}
-          onClick={() => setUsername(name)}
-          eventKey={"" + (i + 1)}
-        >
-          {name}
-        </Dropdown.Item>
-      ))}
-    </DropdownButton>
+      <div className="username-select-row">
+        <div>{username}</div>
+        <div>
+          <svg width={24} height={24}>
+            <path d="M7 10l5 5 5-5z" fill="#333" />
+          </svg>
+        </div>
+      </div>
+      <div
+        style={{ width: width }}
+        className={`username-select-block ${open ? "open" : ""}`}
+      >
+        {names.map((name) => (
+          <div
+            className="username-select-block-item"
+            key={name}
+            onClick={() => setUsername(name)}
+          >
+            {name}
+          </div>
+        ))}
+      </div>
+    </div>
   );
 };

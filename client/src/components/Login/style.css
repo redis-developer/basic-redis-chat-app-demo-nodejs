@@ -18,3 +18,64 @@
 .login-form .username-select .dropdown-menu.show.dropdown-menu-right {
   transform: translate(0px, 38px) !important;
 }
+
+.username-select-dropdown {
+  position: relative;
+  display: flex !important;
+  align-items: center;
+  background-color: transparent !important;
+  color: inherit;
+  padding: 0 12px !important;
+  border: 1px solid rgb(206, 212, 218) !important;
+  border-radius: 4px !important;
+  width: 100% !important;
+  text-align: left !important;
+  height: calc(1.5em + 0.94rem + 2px) !important;
+
+  cursor: pointer;
+}
+
+.username-select-dropdown .username-select-block {
+  background-color: var(--white);
+  position: absolute;
+  top: -1138px;
+  left: 0;
+  opacity: 0;
+  transform: scale(0.5, 0.5);
+  transform-origin: top left;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+
+  border: 1px solid rgb(206, 212, 218) !important;
+  border-radius: 4px !important;
+
+  padding: 8px 0px;
+}
+
+.username-select-dropdown:focus {
+  outline: none;
+  border-color: #80bdff !important;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.username-select-dropdown .username-select-block.open {
+  top: 42px;
+  transform: scale(1, 1);
+  opacity: 1;
+}
+
+.username-select-row {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.username-select-dropdown .username-select-block .username-select-block-item {
+  padding: 4px 24px;
+}
+
+.username-select-dropdown
+  .username-select-block
+  .username-select-block-item:hover {
+  background-color: var(--light);
+}
