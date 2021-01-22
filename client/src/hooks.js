@@ -79,7 +79,7 @@ const useSocket = (user, dispatch) => {
         });
         dispatch({
           type: "append message",
-          payload: { id: message.roomId, message },
+          payload: { id: message.roomId === undefined ? "0" : message.roomId, message },
         });
       });
     } else {

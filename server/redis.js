@@ -7,28 +7,38 @@ const password = process.env.REDIS_PASSWORD || null;
 
 const [host, port] = endpoint.split(":");
 
-/** @type {import('redis').RedisClient} */
-const client = redis.createClient(+port, host);
-
-function resolvePromise(resolve, reject) {
+const resolvePromise = (resolve, reject) => {
   return (err, data) => {
     if (err) {
       reject(err);
     }
     resolve(data);
   };
-}
+};
+
+const auth = (client) => new Promise((a, b) => {
+  if (password === null) {
+    a(true);
+  } else {
+    client.auth(password, resolvePromise(a, b));
+  }
+});
+
+/** @type {import('redis').RedisClient} */
+const client = redis.createClient(+port, host);
+
+/** @type {import('redis').RedisClient} */
+const sub = redis.createClient(+port, host, password === null ? undefined : {
+  password
+});
 
 module.exports = {
   client,
-  auth: () =>
-    new Promise((a, b) => {
-      if (password === null) {
-        a(true);
-      } else {
-        client.auth(password, resolvePromise(a, b));
-      }
-    }),
+  sub,
+  auth: async () => {
+    await auth(client);
+    await auth(sub);
+  },
   incr: (key = "key") =>
     new Promise((a, b) => client.incr(key, resolvePromise(a, b))),
   decr: (key = "key") =>

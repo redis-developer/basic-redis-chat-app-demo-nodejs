@@ -89,6 +89,9 @@ const reducer = (state, action) => {
       };
     }
     case "append message":
+      if (state.rooms[action.payload.id] === undefined) {
+        return state;
+      }
       return {
         ...state,
         rooms: {

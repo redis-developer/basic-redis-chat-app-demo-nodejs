@@ -20,21 +20,16 @@ const {
   smembers,
   sismember,
   srem,
+  sub,
   auth: runRedisAuth,
 } = require("./redis");
 const { createUser, makeUsernameKey, createPrivateRoom, sanitise, getMessages } = require("./utils");
 const { createDemoData } = require("./demo-data");
-
-/** Get default port argument. */
-let DEFAULT_PORT = 4000;
-try {
-  const newPort = parseInt(process.argv[2]);
-  DEFAULT_PORT = isNaN(newPort) ? DEFAULT_PORT : newPort;
-} catch (e) {
-}
+const { PORT, SERVER_ID } = require("./config");
 
 const app = express();
 const server = require("http").createServer(app);
+
 /** @type {SocketIO.Server} */
 const io =
   /** @ts-ignore */
@@ -47,12 +42,41 @@ const sessionMiddleware = session({
   resave: true,
 });
 
-function auth(req, res, next) {
+const auth = (req, res, next) => {
   if (!req.session.user) {
     return res.sendStatus(403);
   }
   next();
-}
+};
+
+const publish = (type, data) => {
+  const outgoing = {
+    serverId: SERVER_ID,
+    type,
+    data
+  };
+  redisClient.publish('MESSAGES', JSON.stringify(outgoing));
+};
+
+const initPubSub = () => {
+  /** We don't use channels here, since the contained message contains all the necessary data. */
+  sub.on('message', (_, message) => {
+    /** 
+     * @type {{
+     *   serverId: string;  
+     *   type: string;
+     *   data: object;
+     * }} 
+     **/
+    const { serverId, type, data } = JSON.parse(message);
+    /** We don't handle the pub/sub messages if the server is the same */
+    if (serverId === SERVER_ID) {
+      return;
+    }
+    io.emit(type, data);
+  });
+  sub.subscribe('MESSAGES');
+};
 
 /** Initialize the app */
 (async () => {
@@ -84,6 +108,8 @@ async function runApp() {
   app.use(bodyParser.json());
   app.use("/", express.static(path.dirname(__dirname) + "/client/build"));
 
+  initPubSub();
+
   /** Store session in redis. */
   app.use(sessionMiddleware);
   io.use((socket, next) => {
@@ -103,14 +129,19 @@ async function runApp() {
     }
     const userId = socket.request.session.user.id;
     await sadd("online_users", userId);
-    socket.broadcast.emit("user.connected", {
+
+    const msg = {
       ...socket.request.session.user,
       online: true,
-    });
+    };
+
+    publish("user.connected", msg);
+    socket.broadcast.emit("user.connected", msg);
 
     socket.on("room.join", (id) => {
       socket.join(`room:${id}`);
     });
+
     socket.on(
       "message",
       /**
@@ -140,25 +171,30 @@ async function runApp() {
         const roomHasMessages = await exists(roomKey);
         if (isPrivate && !roomHasMessages) {
           const ids = message.roomId.split(":");
-          socket.broadcast.emit(`show.room`, {
+          const msg = {
             id: message.roomId,
             names: [
               await hmget(`user:${ids[0]}`, "username"),
               await hmget(`user:${ids[1]}`, "username"),
             ],
-          });
+          };
+          publish("show.room", msg);
+          socket.broadcast.emit(`show.room`, msg);
         }
         await zadd(roomKey, "" + message.date, messageString);
+        publish("message", message);
         io.to(roomKey).emit("message", message);
       }
     );
     socket.on("disconnect", async () => {
       const userId = socket.request.session.user.id;
       await srem("online_users", userId);
-      socket.broadcast.emit("user.disconnected", {
+      const msg = {
         ...socket.request.session.user,
         online: false,
-      });
+      };
+      publish("disconnect", msg);
+      socket.broadcast.emit("user.disconnected", msg);
     });
   });
 
@@ -335,6 +371,5 @@ async function runApp() {
     res.status(200).send(rooms);
   });
 
-  const PORT = process.env.PORT || DEFAULT_PORT;
   server.listen(PORT, () => console.log(`Listening on ${PORT}...`));
 }

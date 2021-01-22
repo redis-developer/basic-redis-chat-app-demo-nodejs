@@ -17,7 +17,7 @@
   ],
   "language": ["JavaScript"],
   "redis_commands": ["INCR", "SET", "ZRANGEBYSCORE"],
-  "redis_features": [],
+  "redis_features": ["PubSub"],
   "redis_modules": [],
   "app_image_urls": [
     "https://github.com/redis-developer/basic-redis-chat-app-demo-nodejs/blob/main/docs/screenshot001.png?raw=true"

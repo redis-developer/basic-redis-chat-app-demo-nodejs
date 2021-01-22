@@ -1,7 +1,7 @@
 // @ts-check
 import { useCallback } from "react";
 import { useEffect, useState, useRef } from "react";
-import { addRoom, getMessages, getUsers } from "../../api";
+import { addRoom, getMessages } from "../../api";
 import { useAppState } from "../../state";
 import { parseRoomName, populateUsersFromLoadedMessages } from "../../utils";
 
