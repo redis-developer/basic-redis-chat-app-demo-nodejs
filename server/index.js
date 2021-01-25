@@ -193,7 +193,7 @@ async function runApp() {
         ...socket.request.session.user,
         online: false,
       };
-      publish("disconnect", msg);
+      publish("user.disconnected", msg);
       socket.broadcast.emit("user.disconnected", msg);
     });
   });
