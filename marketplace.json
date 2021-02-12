@@ -16,7 +16,26 @@
     }
   ],
   "language": ["JavaScript"],
-  "redis_commands": ["INCR", "SET", "ZRANGEBYSCORE"],
+  "redis_commands": [
+    "AUTH",
+    "INCR",
+    "DECR",
+    "HMSET",
+    "EXISTS",
+    "HEXISTS",
+    "SET",
+    "GET",
+    "HGETALL",
+    "ZRANGEBYSCORE",
+    "ZADD",
+    "SADD",
+    "HMGET",
+    "SISMEMBER",
+    "SMEMBERS",
+    "SREM",
+    "PUBLISH",
+    "SUBSCRIBE"
+  ],
   "redis_features": ["PubSub"],
   "redis_modules": [],
   "app_image_urls": [
@@ -25,5 +44,5 @@
   "youtube_url": "",
   "special_tags": [],
   "verticals": [],
-  "markdown": "https://raw.githubusercontent.com/redislabs-training/redis-sitesearch/master/README.md"
+  "markdown": "https://raw.githubusercontent.com/redis-developer/basic-redis-chat-app-demo-nodejs/main/README.md"
 }
