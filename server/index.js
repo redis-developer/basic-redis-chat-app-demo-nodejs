@@ -3,6 +3,7 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const session = require("express-session");
 const bodyParser = require("body-parser");
+/** @ts-ignore */
 const randomName = require("node-random-name");
 let RedisStore = require("connect-redis")(session);
 const path = require("path");
@@ -23,7 +24,13 @@ const {
   sub,
   auth: runRedisAuth,
 } = require("./redis");
-const { createUser, makeUsernameKey, createPrivateRoom, sanitise, getMessages } = require("./utils");
+const {
+  createUser,
+  makeUsernameKey,
+  createPrivateRoom,
+  sanitise,
+  getMessages,
+} = require("./utils");
 const { createDemoData } = require("./demo-data");
 const { PORT, SERVER_ID } = require("./config");
 
@@ -53,20 +60,20 @@ const publish = (type, data) => {
   const outgoing = {
     serverId: SERVER_ID,
     type,
-    data
+    data,
   };
-  redisClient.publish('MESSAGES', JSON.stringify(outgoing));
+  redisClient.publish("MESSAGES", JSON.stringify(outgoing));
 };
 
 const initPubSub = () => {
   /** We don't use channels here, since the contained message contains all the necessary data. */
-  sub.on('message', (_, message) => {
-    /** 
+  sub.on("message", (_, message) => {
+    /**
      * @type {{
-     *   serverId: string;  
+     *   serverId: string;
      *   type: string;
      *   data: object;
-     * }} 
+     * }}
      **/
     const { serverId, type, data } = JSON.parse(message);
     /** We don't handle the pub/sub messages if the server is the same */
@@ -75,7 +82,7 @@ const initPubSub = () => {
     }
     io.emit(type, data);
   });
-  sub.subscribe('MESSAGES');
+  sub.subscribe("MESSAGES");
 };
 
 /** Initialize the app */
@@ -103,7 +110,9 @@ const initPubSub = () => {
 })();
 
 async function runApp() {
-  const repoLinks = await fs.readFile(path.dirname(__dirname) + '/repo.json').then(x => JSON.parse(x.toString()));
+  const repoLinks = await fs
+    .readFile(path.dirname(__dirname) + "/repo.json")
+    .then((x) => JSON.parse(x.toString()));
 
   app.use(bodyParser.json());
   app.use("/", express.static(path.dirname(__dirname) + "/client/build"));
@@ -119,7 +128,7 @@ async function runApp() {
     // connections, as 'socket.request.res' will be undefined in that case
   });
 
-  app.get('/links', (req, res) => {
+  app.get("/links", (req, res) => {
     return res.send(repoLinks);
   });
 
@@ -239,7 +248,7 @@ async function runApp() {
   });
 
   app.post("/logout", auth, (req, res) => {
-    req.session.destroy(() => { });
+    req.session.destroy(() => {});
     return res.sendStatus(200);
   });
 
@@ -260,15 +269,11 @@ async function runApp() {
   });
 
   /** Fetch messages from the general chat (just to avoid loading them only once the user was logged in.) */
-  app.get('/room/0/preload', async (req, res) => {
+  app.get("/room/0/preload", async (req, res) => {
     const roomId = "0";
     try {
       let name = await get(`room:${roomId}:name`);
-      const messages = await getMessages(
-        roomId,
-        0,
-        20
-      );
+      const messages = await getMessages(roomId, 0, 20);
       return res.status(200).send({ id: roomId, name, messages });
     } catch (err) {
       return res.status(400).send(err);
@@ -281,11 +286,7 @@ async function runApp() {
     const offset = +req.query.offset;
     const size = +req.query.size;
     try {
-      const messages = await getMessages(
-        roomId,
-        offset,
-        size
-      );
+      const messages = await getMessages(roomId, offset, size);
       return res.status(200).send(messages);
     } catch (err) {
       return res.status(400).send(err);
@@ -371,5 +372,15 @@ async function runApp() {
     res.status(200).send(rooms);
   });
 
-  server.listen(PORT, () => console.log(`Listening on ${PORT}...`));
+  /**
+   * We have an external port from the environment variable. To get this working on heroku,
+   * it's required to specify the host
+   */
+  if (process.env.PORT) {
+    server.listen(+PORT, "0.0.0.0", () =>
+      console.log(`Listening on ${PORT}...`)
+    );
+  } else {
+    server.listen(+PORT, () => console.log(`Listening on ${PORT}...`));
+  }
 }
