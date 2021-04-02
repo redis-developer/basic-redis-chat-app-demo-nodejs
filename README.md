@@ -1,6 +1,10 @@
 # Basic Redis Chat App Demo
 
-A basic chat application built with Express.js Socket.io and Redis.
+Showcases how to impliment chat app in Node.js, Socket.IO and Redis. This example uses **pub/sub** feature combined with web-sockets for implementing the message communication between client and server.
+
+<a href="https://raw.githubusercontent.com/redis-developer/basic-redis-chat-app-demo-dotnet/main/docs/screenshot000.png?raw=true"><img src="https://raw.githubusercontent.com/redis-developer/basic-redis-chat-app-demo-dotnet/main/docs/screenshot000.png?raw=true" width="49%"></a>
+<a href="https://raw.githubusercontent.com/redis-developer/basic-redis-chat-app-demo-dotnet/main/docs/screenshot001.png?raw=true"><img src="https://raw.githubusercontent.com/redis-developer/basic-redis-chat-app-demo-dotnet/main/docs/screenshot001.png?raw=true" width="49%"></a>
+
 
 ## Try it out
 
@@ -19,14 +23,6 @@ A basic chat application built with Express.js Socket.io and Redis.
         <img src="https://deploy.cloud.run/button.svg" alt="Run on Google Cloud" width="150px"/>
     </a>
 </p>
-
-## How it works?
-
-![How it works](docs/screenshot001.png)
-
-The chat server works as a basic *REST* API which involves keeping the session and handling the user state in the chat rooms (besides the WebSocket/real-time part).
-
-When the server starts, the initialization step occurs. At first, a new Redis connection is established and it's checked whether it's needed to load the demo data. 
 
 ### Initialization
 For simplicity, a key with **total_users** value is checked: if it does not exist, we fill the Redis database with initial data.
@@ -84,10 +80,9 @@ Note we send additional data related to the type of the message and the server i
 
 ### How the data is stored:
 
-Redis is used mainly as a database to keep the user/messages data and for sending messages between connected servers.  
-The session is stored separately in Redis with a use of `connect-redis` **library** on successful log in.
+Redis is used mainly as a database to keep the user/messages data and for sending messages between connected servers.
 
-The real-time functionality is handled by **Socket.IO** for server-client messaging. Additionally each server instance subscribes to the `MESSAGES` channel of pub/sub and dispatches messages once they arrive.
+The real-time functionality is handled by **Socket.IO** for server->client messaging. Additionally each server instance subscribes to the `MESSAGES` channel of pub/sub and dispatches messages once they arrive.
 
 - The chat data is stored in various keys and various data types.
   - User data is stored in a hash set where each user entry contains the next values:
@@ -98,13 +93,17 @@ The real-time functionality is handled by **Socket.IO** for server-client messag
     - Each room has a name associated with it
   - **Online** set is global for all users is used for keeping track on which user is online.
 
-**User** hash set is accessed by key `user:{userId}`. The data for it stored with `HSET key field data`. User id is calculated by incrementing the `total_users` key (`INCR total_users`)
+* User hash set is accessed by key `user:{userId}`. The data for it stored with `HSET key field data`. User id is calculated by incrementing the `total_users`.
+    * E.g `INCR total_users`
 
-**Username** is stored as a separate key (`username:{username}`) which returns the userId for quicker access and stored with `SET username:{username} {userId}`.
+* Username is stored as a separate key (`username:{username}`) which returns the userId for quicker access.
+    * E.g `SET username:Alex 4`
 
-**Rooms** which user belongs too are stored at `user:{userId}:rooms` as a set of room ids. A room is added by `SADD user:{userId}:rooms {roomId}` command.
+* Rooms which user belongs too are stored at `user:{userId}:rooms` as a set of room ids. 
+    * E.g `SADD user:Alex:rooms 1`
 
-**Messages** are stored at `room:{roomId}` key in a sorted set (as mentioned above). They are added with `ZADD room:{roomId} {timestamp} {message}` command. Message is serialized to an app-specific JSON string.
+* Messages are stored at `room:{roomId}` key in a sorted set (as mentioned above). They are added with `ZADD room:{roomId} {timestamp} {message}` command. Message is serialized to an app-specific JSON string.
+    * E.g `ZADD room:0 1617197047 { "From": "2", "Date": 1617197047, "Message": "Hello", "RoomId": "1:2" }`
 
 ### How the data is accessed:
 
@@ -116,6 +115,19 @@ The real-time functionality is handled by **Socket.IO** for server-client messag
 
 **Get list of messages** `ZREVRANGE room:{roomId} {offset_start} {offset_end}`. 
 Example: `ZREVRANGE room:1:2 0 50` will return 50 messages with 0 offsets for the private room between users with IDs 1 and 2.
+
+
+## How it works?
+
+### Sign in
+![How it works](docs/screenshot000.png)
+
+### Chats
+![How it works](docs/screenshot001.png)
+
+The chat server works as a basic *REST* API which involves keeping the session and handling the user state in the chat rooms (besides the WebSocket/real-time part).
+
+When the server starts, the initialization step occurs. At first, a new Redis connection is established and it's checked whether it's needed to load the demo data. 
 
 ## How to run it locally?
 

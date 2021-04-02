@@ -1,6 +1,6 @@
 {
   "app_name": "Basic Redis chat app in Nodejs",
-  "description": "Showcases how to impliment chat app in NodeJS",
+  "description": "Showcases how to impliment chat app in Node.js, Socket.IO and Redis",
   "type": "App",
   "contributed_by": "Redis Labs",
   "repo_url": "https://github.com/redis-developer/basic-redis-chat-app-demo-nodejs",
