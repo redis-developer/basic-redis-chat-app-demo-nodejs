@@ -5,6 +5,12 @@ Showcases how to impliment chat app in Node.js, Socket.IO and Redis. This exampl
 <a href="https://raw.githubusercontent.com/redis-developer/basic-redis-chat-app-demo-dotnet/main/docs/screenshot000.png?raw=true"><img src="https://raw.githubusercontent.com/redis-developer/basic-redis-chat-app-demo-dotnet/main/docs/screenshot000.png?raw=true" width="49%"></a>
 <a href="https://raw.githubusercontent.com/redis-developer/basic-redis-chat-app-demo-dotnet/main/docs/screenshot001.png?raw=true"><img src="https://raw.githubusercontent.com/redis-developer/basic-redis-chat-app-demo-dotnet/main/docs/screenshot001.png?raw=true" width="49%"></a>
 
+# Overview video
+
+Here's a short video that explains the project and how it uses Redis:
+
+[![Watch the video on YouTube](docs/YTThumbnail.png)](https://www.youtube.com/watch?v=miK7xDkDXF0)
+
 ## Technical Stacks
 
 - Frontend - _React_, _Socket_ (Socket.IO)
