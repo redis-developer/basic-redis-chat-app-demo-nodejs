@@ -39,10 +39,10 @@
   "redis_features": ["PubSub"],
   "redis_modules": [],
   "app_image_urls": [
-    "https://github.com/redis-developer/basic-redis-chat-app-demo-nodejs/blob/main/docs/screenshot001.png?raw=true"
+    "https://github.com/redis-developer/basic-redis-chat-app-demo-nodejs/raw/main/docs/screenshot001.png"
   ],
   "youtube_url": "https://www.youtube.com/watch?v=miK7xDkDXF0",
   "special_tags": [],
   "verticals": [],
-  "markdown": "https://raw.githubusercontent.com/redis-developer/basic-redis-chat-app-demo-nodejs/main/README.md"
+  "markdown": "https://github.com/redis-developer/basic-redis-chat-app-demo-nodejs/raw/main/README.md"
 }
