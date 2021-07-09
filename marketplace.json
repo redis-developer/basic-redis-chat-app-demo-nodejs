@@ -36,7 +36,7 @@
     "PUBLISH",
     "SUBSCRIBE"
   ],
-  "redis_features": ["PubSub"],
+  "redis_features": ["Pub/Sub"],
   "redis_modules": [],
   "app_image_urls": [
     "https://github.com/redis-developer/basic-redis-chat-app-demo-nodejs/raw/main/docs/screenshot001.png"
