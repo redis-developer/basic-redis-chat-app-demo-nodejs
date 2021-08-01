@@ -4,6 +4,7 @@
   "type": "App",
   "contributed_by": "Redis Labs",
   "repo_url": "https://github.com/redis-developer/basic-redis-chat-app-demo-nodejs",
+  "preview_image_url": "https://raw.githubusercontent.com/redis-developer/basic-redis-chat-app-demo-nodejs/master/images/app_preview_image.png",
   "download_url": "https://github.com/redis-developer/basic-redis-chat-app-demo-nodejs/archive/main.zip",
   "hosted_url": "",
   "quick_deploy": "true",
